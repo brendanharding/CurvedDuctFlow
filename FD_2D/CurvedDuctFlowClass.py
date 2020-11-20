@@ -515,8 +515,8 @@ class CurvedDuctFlowClass(object):
 			                        +K*eps/(4.0*ds*dz)*C_int**2*dPhids_int
 
 		if eps==0.0:
-			temp_p2_p0 = 1.0/ds**4+0.5*K/ds**3*C_int*dPhids_int
-			temp_m2_p0 = 1.0/ds**4-0.5*K/ds**3*C_int*dPhids_int
+			temp_p2_p0 = 1.0/ds**4+0.5*K/ds**3*dPhidz_int
+			temp_m2_p0 = 1.0/ds**4-0.5*K/ds**3*dPhidz_int
 		else:
 			temp_p2_p0 = 1.0/ds**4+(0.5*K/ds**3*dPhidz_int-eps/ds**3)*C_int
 			temp_m2_p0 = 1.0/ds**4-(0.5*K/ds**3*dPhidz_int-eps/ds**3)*C_int
