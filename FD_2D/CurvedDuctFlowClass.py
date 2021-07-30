@@ -19,6 +19,23 @@ class CurvedDuctFlowClass(object):
 	and solved using sparse LU by default (although using bicgstab is an option).
 	The discretisation is such that the solutions achieve second order
 	convergence with respect to grid resolution.
+ 
+    A note on correct non-dimensional use:
+    You are free to choose any characteristic length X and velocity U that you wish.
+    You need to pass the appropriate (non-dimensional) W,H along with epsilon=X/R
+    and K=epsilon*Re^2 where Re=(rho/mu)*U*X. To obtain the correct flow you must
+    now determine G such that the axial velocity of the non-dimensional solution
+    respects your chosen velocity scale. For example, if your U is to be the mean axial
+    velocity then G needs to be such that the mean of the returned axial velocity is 0.
+    Finding the correct G is a non-linear optimisation problem (with non-zero K)
+    and will require some form of iteration.
+    
+    A note on correct dimensional use:
+    Pass your dimensional W,H values along with epsilon=1/R and K=epsilon*Re^2
+    where Re=(rho/mu) in this instance (with appropriate units). You then need
+    to determine G such that the returned axial velocity field meets some desired
+    criterion (i.e. you might be aiming for a specifc flow rate). Again, this is a
+    non-linear optimisation problem that you, the user, are responsible for solving.
 	"""
 	def __init__(self,m=65,n=65,W=2.0,H=2.0,epsilon=0.01,K=1.0,G=4.0):
 		"""
@@ -44,7 +61,7 @@ class CurvedDuctFlowClass(object):
 			Defaults to 2.0,2.0
 		epsilon: float
 			The curvature of the duct, that is 1/R given a bend radius R
-			in dimensionless coordinates.
+			in the appropriate dimensional or dimensionless measurements.
 			Providing a value of 0 means the solution corresponds to 'Dean flow'.
 			Defaults to 0.0
 		K : float
