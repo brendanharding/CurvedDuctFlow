@@ -60,8 +60,8 @@ class CurvedDuctFlowClass(object):
             paper these should generally be scaled such that min(W,H)=2.
             Defaults to 2.0,2.0
         epsilon: float
-            The curvature of the duct, that is 1/R given a bend radius R
-            in the appropriate dimensional or dimensionless measurements.
+			The curvature of the duct, that is X/R given a bend radius R
+            and length scale X.
             Providing a value of 0 means the solution corresponds to 'Dean flow'.
             Defaults to 0.0
         K : float
@@ -70,9 +70,8 @@ class CurvedDuctFlowClass(object):
             Defaults to 1.0
         G : float
             The pressure gradient driving the axial flow.
-            Ideally it should be chosen such that max(u)=1.0 given K=0.0
-            (e.g. 4.0/L^2 would be the appropriate choice for a circular
-             pipe and is generally close enough for our purposes).
+			This needs to be chosen to respect your desired velocity scale U
+            (see the notes on correct non-dimensional use).
             You should only change this if you understand the consequences on
             the scaling of both the axial velocity and stream-function.
             Defaults to 4.0
@@ -83,8 +82,7 @@ class CurvedDuctFlowClass(object):
         self._K = K
         self._G = G
         # Define other useful numbers
-        self._L = min(0.5*W,0.5*H) # probably not really needed...
-        self._N = n*m              # probably not really needed...
+        self._N = n*m
         self._ds = W/(m-1)
         self._dz = H/(n-1)
         # Construct arrays/meshgrids for the finite difference node coordinates (8*(2*m+n+3*n*m) bytes)
@@ -190,28 +188,23 @@ class CurvedDuctFlowClass(object):
          K is proportional to epsilon*Re^2)"""
         return self._K
     def set_G(self,G):
-        """Set a (dimensionless) driving pressure G
-        (Recall this specific non-dimensionalisation is such that
-         G is proportional to Dn=sqrt(K))"""
+        """Set a (dimensionless) driving pressure G"""
         self._G = G
     def get_G(self):
-        """Get the current (dimensionless) driving pressure G
-        (Recall this specific non-dimensionalisation is such that
-         G is proportional to Dn=sqrt(K))"""
+        """Get the (dimensionless) driving pressure gradient G"""
         return self._G
     def set_epsilon(self,epsilon):
-        """Set a new curvature ratio epsilon=L/R
-        (R being the bend radius and L the characteristic duct size)
+        """Set a new curvature ratio epsilon=X/R
+		(R being the bend radius and X the characteristic length scale)
         Recall setting this to zero results in the 'Dean approximation'"""
         self._epsilon = epsilon
         self._r = 1.0+self._epsilon*self._s # probably not really needed...
         self._R = 1.0+self._epsilon*self._S # important to update this!!!
     def get_epsilon(self):
-        """Get the current curvature ratio epsilon=L/R
-        (R being the bend radius and L the characteristic duct size)
-        Recall setting this to zero results in the 'Dean approximation'"""
+        """Get the current curvature ratio epsilon=X/R
+		(R being the bend radius and X the characteristic length scale)"""
         return self._epsilon
-    # TODO: consider adding functions for updating m,n,W,H...
+	# Note: One should probably create a new class instance in order to change any other variables
     def _zeros_edge(self):
         """Initialise an array of the correct size with zeros on the edge/boundary"""
         # Note: for small array sizes (essentially fitting in cache)
