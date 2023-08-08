@@ -289,7 +289,7 @@ class CurvedDuctFlowClass(object):
         if include_edges:
             temp = np.empty(array.shape)
             temp[1:-1,:] = (array[2:,:]-2.0*array[1:-1,:]+array[:-2,:])/self._dz**2
-            temp[ 0,:] = (2*array[ 0,:]-5*array[ 1,:]+4*array[ 2,:]-array[ 4,:])/self._dz**2
+            temp[ 0,:] = (2*array[ 0,:]-5*array[ 1,:]+4*array[ 2,:]-array[ 3,:])/self._dz**2
             temp[-1,:] = (2*array[-1,:]-5*array[-2,:]+4*array[-3,:]-array[-4,:])/self._dz**2
             return temp
         else:
